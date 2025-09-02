@@ -1,12 +1,9 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { ContactFormData } from '../utils/emailService';
 
 const ContactPage: React.FC = () => {
-  // const formSubmit = useRef()
-
-  const formSubmit = useRef<HTMLFormElement | null>(null);
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -23,31 +20,38 @@ const ContactPage: React.FC = () => {
       [name]: value,
     }));
   };
+
+  // helper function for Netlify form encoding
+  const encode = (data: Record<string, string>) => {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
-    const form = e.target as HTMLFormElement;
-
     try {
-      const formDataObj = new FormData(form);
-      await fetch('/', {
-        method: 'POST',
+      await fetch("/", {
+        method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formDataObj,
+        body: encode({
+          "form-name": "contact", // required hidden field
+          ...formData,
+        }),
       });
 
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phoneNumber: '', description: '' });
     } catch (err) {
-      console.error('Form submission error', err);
+      console.error("Form submission error", err);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   return (
     <main className="py-20">
@@ -145,7 +149,6 @@ const ContactPage: React.FC = () => {
             )}
 
             <form
-              ref={formSubmit}
               name="contact"
               method="POST"
               data-netlify="true"
@@ -232,7 +235,6 @@ const ContactPage: React.FC = () => {
                 {isSubmitting ? 'Sending…' : 'Send Message'}
               </button>
             </form>
-
           </div>
         </div>
 
