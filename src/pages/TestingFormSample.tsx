@@ -1,7 +1,6 @@
 import React from 'react'
 
-const TestingForm = () => {
-    
+const TestingFormSample = () => {    
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // handle form data here
@@ -28,7 +27,8 @@ const TestingForm = () => {
                 <button type='submit'>Submit Resultrs</button>
             </form>
         </div>
+
     )
 }
 
-export default TestingForm
+export default TestingFormSample

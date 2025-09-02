@@ -5,7 +5,7 @@ import FloatingButtons from './components/FloatingButtons';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
-import TestingForm from './pages/testingForm';
+import TestingForm from './pages/TestingFormSample';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
