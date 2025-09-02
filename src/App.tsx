@@ -5,6 +5,7 @@ import FloatingButtons from './components/FloatingButtons';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
+import TestingForm from './pages/testingForm';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -33,7 +34,7 @@ function App() {
       case 'services':
         return <ServicesPage setCurrentPage={setCurrentPage} />;
       case 'contact':
-        return <ContactPage />;
+        return <TestingForm />;
       default:
         return <HomePage />;
     }
