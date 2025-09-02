@@ -8,7 +8,7 @@ const TestingFormSample = () => {
   }
     return (
         <div>
-            <form name='contact v1' method='post' data-netlify='true' onSubmit={handleSubmit} >
+            <form name='contact v1' method='post' data-netlify='true' onSubmit={'submit'} >
                 <input type="hidden" name="form-name" value={"contact v1"} />
                 <div>
                     <label htmlFor="name">Name</label>
