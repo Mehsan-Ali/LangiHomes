@@ -34,6 +34,7 @@ const ContactPage: React.FC = () => {
       const formDataObj = new FormData(form);
       await fetch('/', {
         method: 'POST',
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formDataObj,
       });
 
@@ -227,8 +228,7 @@ const ContactPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105"
-              >
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105">
                 {isSubmitting ? 'Sending…' : 'Send Message'}
               </button>
             </form>
