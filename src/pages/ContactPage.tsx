@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import { useState } from 'react';
-import emailjs from '@emailjs/browser'
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
-import { sendContactEmail, ContactFormData } from '../utils/emailService';
+import { ContactFormData } from '../utils/emailService';
 
 const ContactPage: React.FC = () => {
   // const formSubmit = useRef()
@@ -24,31 +23,30 @@ const ContactPage: React.FC = () => {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
-    if (!formSubmit.current) return;
+    const form = e.target as HTMLFormElement;
 
     try {
-      await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,   // Or use your actual string
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        formSubmit.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
+      const formDataObj = new FormData(form);
+      await fetch('/', {
+        method: 'POST',
+        body: formDataObj,
+      });
 
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phoneNumber: '', description: '' }); // reset form
-    } catch (error) {
-      console.error('Error sending email:', error);
+      setFormData({ name: '', email: '', phoneNumber: '', description: '' });
+    } catch (err) {
+      console.error('Form submission error', err);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <main className="py-20">
@@ -145,7 +143,23 @@ const ContactPage: React.FC = () => {
               </div>
             )}
 
-            <form ref={formSubmit} onSubmit={handleSubmit} className="space-y-6">
+            <form
+              ref={formSubmit}
+              name="contact"
+              method="POST"
+              data-netlify="true"
+              netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+              {/* Hidden input required by Netlify */}
+              <input type="hidden" name="form-name" value="contact" />
+              <p className="hidden">
+                <label>
+                  Don’t fill this out: <input name="bot-field" />
+                </label>
+              </p>
+
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                   Name
@@ -156,9 +170,10 @@ const ContactPage: React.FC = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   placeholder="Your full name"
-                  required/>
+                />
               </div>
 
               <div>
@@ -171,14 +186,14 @@ const ContactPage: React.FC = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="your.email@example.com"
                   required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="your.email@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
                   Phone
                 </label>
                 <input
@@ -187,9 +202,9 @@ const ContactPage: React.FC = () => {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="Your phone number"
                   required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Your phone number"
                 />
               </div>
 
@@ -203,10 +218,10 @@ const ContactPage: React.FC = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="Tell us about your project..."
                   required
-                ></textarea>
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="Tell us about your project..."
+                />
               </div>
 
               <button
@@ -214,9 +229,10 @@ const ContactPage: React.FC = () => {
                 disabled={isSubmitting}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? 'Sending…' : 'Send Message'}
               </button>
             </form>
+
           </div>
         </div>
 
