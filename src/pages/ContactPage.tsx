@@ -21,11 +21,11 @@ const ContactPage: React.FC = () => {
     }));
   };
 
-  // helper function for Netlify form encoding
+  // Encode helper for Netlify
   const encode = (data: Record<string, string>) => {
     return Object.keys(data)
-      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-      .join("&");
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,11 +34,11 @@ const ContactPage: React.FC = () => {
     setSubmitStatus('idle');
 
     try {
-      await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: encode({
-          "form-name": "contact", // required hidden field
+          'form-name': 'contact',
           ...formData,
         }),
       });
@@ -46,7 +46,7 @@ const ContactPage: React.FC = () => {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phoneNumber: '', description: '' });
     } catch (err) {
-      console.error("Form submission error", err);
+      console.error('Form submission error', err);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -57,9 +57,7 @@ const ContactPage: React.FC = () => {
     <main className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Contact Us
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">Contact Us</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Let's talk about your next project! Get in touch for a free consultation and personalized quote.
           </p>
@@ -77,10 +75,7 @@ const ContactPage: React.FC = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900 text-lg">Phone</p>
-                  <a
-                    href="tel:02102254672"
-                    className="text-blue-600 hover:text-blue-700 transition-colors text-xl"
-                  >
+                  <a href="tel:02102254672" className="text-blue-600 hover:text-blue-700 transition-colors text-xl">
                     02102254672
                   </a>
                 </div>
@@ -231,18 +226,25 @@ const ContactPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105">
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-lg text-lg font-semibold transition-all duration-300 hover:scale-105"
+              >
                 {isSubmitting ? 'Sending…' : 'Send Message'}
               </button>
+            </form>
+
+            {/* Hidden static Netlify form (ensures build-time detection) */}
+            <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+              <input type="text" name="name" />
+              <input type="email" name="email" />
+              <input type="tel" name="phoneNumber" />
+              <textarea name="description"></textarea>
             </form>
           </div>
         </div>
 
         <div className="text-center mt-16">
           <div className="bg-blue-600 text-white rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold mb-4">
-              Let's talk about your next project!
-            </h2>
+            <h2 className="text-3xl font-bold mb-4">Let's talk about your next project!</h2>
             <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
               We're here to help bring your vision to life with expert craftsmanship and personalized service.
             </p>
